@@ -20,22 +20,6 @@ namespace ProAgil.WebAPI.Controllers
         public ValuesController(DataContext context)
         {
             _context = context;
-            listaEventos = new Evento[]
-            {
-                new Evento(){
-                    EventoId = 1,
-                    Tema = "Angular e .Net Core",
-                    Local = "Belo Horizonte",
-                    Lote = "1o Lote"
-                    },
-                new Evento()
-                {
-                    EventoId = 2,
-                    Tema = "Angular",
-                    Local = "São Paulo",
-                    Lote = "1o Lote"
-                },
-            };
         }
 
         [HttpGet("{id}")]
