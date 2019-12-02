@@ -14,7 +14,6 @@ namespace ProAgil.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly Evento[] listaEventos;
         private DataContext _context;
 
         public ValuesController(DataContext context)
@@ -48,6 +47,35 @@ namespace ProAgil.WebAPI.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        public async Task<IActionResult> Post(Evento evento)
+        {
+            await _context.Eventos.AddAsync(evento);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPut]
+        public IActionResult Put(Evento evento)
+        {
+            //Get the existing Event
+            var entity = _context.Eventos.Find(evento.EventoId);
+            if (entity != null)
+            {
+                entity.ImageUrl = evento.ImageUrl;
+                entity.Tema = evento.Tema;
+                entity.Local = evento.Local;
+                entity.Lote = evento.Lote;
+                entity.QtdPessoas = evento.QtdPessoas;
+                entity.DataEvento = evento.DataEvento;
+
+                _context.Update(entity);
+                _context.SaveChanges();
+            }
+            else return StatusCode(StatusCodes.Status404NotFound);
+
+            return Ok();
         }
     }
 }

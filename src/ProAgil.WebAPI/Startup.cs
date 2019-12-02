@@ -41,8 +41,10 @@ namespace ProAgil.WebAPI
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 );
+
             app.UseRouting();
             app.UseAuthorization();
+            app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {
