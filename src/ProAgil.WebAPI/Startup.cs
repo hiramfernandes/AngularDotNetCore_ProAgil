@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore.Sqlite;
-using ProAgil.WebAPI.Data;
-using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using ProAgil.Repository;
+using ProAgil.Repository.Data;
 
 namespace ProAgil.WebAPI
 {
@@ -21,13 +22,18 @@ namespace ProAgil.WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite("Data Source=proagil.db"));
+            services.AddDbContext<ProAgilContext>(x => x.UseSqlite("Data Source=proagil.db"));
+            services.AddScoped<IProAgilRepository, ProAgilRepository>();
             services.AddControllers();
             services.AddCors();
+
+            services.AddControllers()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0)
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+            public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -46,7 +52,7 @@ namespace ProAgil.WebAPI
             app.UseAuthorization();
             app.UseStaticFiles();
 
-            app.UseEndpoints(endpoints =>
+         app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProAgil.WebAPI.Data;
-using ProAgil.WebAPI.Model;
+using ProAgil.Domain.Model;
+using ProAgil.Repository.Data;
+using System;
+using System.Threading.Tasks;
 
 namespace ProAgil.WebAPI.Controllers
 {
@@ -14,9 +12,9 @@ namespace ProAgil.WebAPI.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private DataContext _context;
+        private ProAgilContext _context;
 
-        public ValuesController(DataContext context)
+        public ValuesController(ProAgilContext context)
         {
             _context = context;
         }
@@ -27,7 +25,7 @@ namespace ProAgil.WebAPI.Controllers
             try
             {
                 var eventos = _context.Eventos;
-                return Ok(await eventos.FirstOrDefaultAsync(x => x.EventoId == id));
+                return Ok(await eventos.FirstOrDefaultAsync(x => x.Id == id));
             }
             catch (SystemException)
             {
@@ -60,13 +58,12 @@ namespace ProAgil.WebAPI.Controllers
         public IActionResult Put(Evento evento)
         {
             //Get the existing Event
-            var entity = _context.Eventos.Find(evento.EventoId);
+            var entity = _context.Eventos.Find(evento.Id);
             if (entity != null)
             {
                 entity.ImageUrl = evento.ImageUrl;
                 entity.Tema = evento.Tema;
                 entity.Local = evento.Local;
-                entity.Lote = evento.Lote;
                 entity.QtdPessoas = evento.QtdPessoas;
                 entity.DataEvento = evento.DataEvento;
 
