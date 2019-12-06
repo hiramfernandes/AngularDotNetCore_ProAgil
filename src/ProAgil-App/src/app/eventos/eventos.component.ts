@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { EventoService } from '../_services/evento.service';
 import { Evento } from '../_models/Evento';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal/';
-// import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal/public_api';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 
 @Component({
@@ -18,6 +18,7 @@ export class EventosComponent implements OnInit {
   imagemMargem = 2;
   mostrarImagem = false;
   modalRef: BsModalRef;
+  registerForm: FormGroup;
 
   _filtroLista = '';
 
@@ -36,6 +37,25 @@ export class EventosComponent implements OnInit {
 
   ngOnInit() {
     this.getEventos();
+  }
+
+  validation() {
+    this.registerForm = new FormGroup({
+      tema: new FormControl('',
+      [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
+      local: new FormControl('', Validators.required),
+      dataEvento: new FormControl('', Validators.required),
+      imageUrl: new FormControl('', Validators.required),
+      qtdPessoas: new FormControl('',
+      Validators.max(500)),
+      telefone: new FormControl('', Validators.required),
+      email: new FormControl('', 
+        [Validators.required, Validators.email])
+    });
+  }
+
+  salvarAlteracao() {
+
   }
 
   openModal(template: TemplateRef<any>) {
