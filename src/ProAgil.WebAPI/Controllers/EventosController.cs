@@ -74,18 +74,24 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Put(int eventoId, Evento evento)
+        public async Task<IActionResult> Put(Evento evento)
         {
             try
             {
-                var eventoEntity = await _repository.GetEventoAsyncById(eventoId, false);
-                if (eventoEntity == null)
+                var entity = await _repository.GetEventoAsyncById(evento.Id, false);
+                if (entity == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    _repository.Update(evento);
+                    entity.ImageUrl = evento.ImageUrl;
+                    entity.Tema = evento.Tema;
+                    entity.Local = evento.Local;
+                    entity.QtdPessoas = evento.QtdPessoas;
+                    entity.DataEvento = evento.DataEvento;
+
+                    _repository.Update(entity);
                     if (await _repository.SaveChangesAsync())
                         return Created($"/api/eventos/{evento.Id}", evento);
 

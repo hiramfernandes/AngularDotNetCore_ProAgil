@@ -1,8 +1,9 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { EventoService } from '../_services/evento.service';
 import { Evento } from '../_models/Evento';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal/';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { BsModalService } from 'ngx-bootstrap/modal/';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { templateJitUrl } from '@angular/compiler';
 
 
 @Component({
@@ -13,53 +14,104 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class EventosComponent implements OnInit {
 
   eventos: Evento[];
+
+  evento: Evento;
+  modoSalvar = 'post';
+
   eventosFiltrados: Evento[];
   imagemAltura = 50;
   imagemMargem = 2;
   mostrarImagem = false;
-  modalRef: BsModalRef;
   registerForm: FormGroup;
 
   _filtroLista = '';
 
-  get filtroLista(): string {
-    return this._filtroLista;
-  }
-  set filtroLista(value: string) {
-    this._filtroLista = value;
-    this.eventosFiltrados = this.filtroLista ? this.filtrarEventos(this.filtroLista) : this.eventos;
-  }
-
   constructor(
     private eventoService: EventoService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private fb: FormBuilder
     ) { }
 
-  ngOnInit() {
-    this.getEventos();
-  }
+    get filtroLista(): string {
+      return this._filtroLista;
+    }
+
+    set filtroLista(value: string) {
+      this._filtroLista = value;
+      this.eventosFiltrados = this.filtroLista ? this.filtrarEventos(this.filtroLista) : this.eventos;
+    }
+
+    ngOnInit() {
+      this.validation();
+      this.getEventos();
+    }
 
   validation() {
-    this.registerForm = new FormGroup({
-      tema: new FormControl('',
-      [Validators.required, Validators.minLength(4), Validators.maxLength(50)]),
-      local: new FormControl('', Validators.required),
-      dataEvento: new FormControl('', Validators.required),
-      imageUrl: new FormControl('', Validators.required),
-      qtdPessoas: new FormControl('',
-      Validators.max(500)),
-      telefone: new FormControl('', Validators.required),
-      email: new FormControl('', 
-        [Validators.required, Validators.email])
+    this.registerForm = this.fb.group({
+      tema: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
+      local: ['', Validators.required],
+      dataEvento: ['', Validators.required],
+      imageUrl: ['', Validators.required],
+      qtdPessoas: ['', [Validators.required, Validators.max(500)]],
+      telefone: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]]
     });
   }
 
-  salvarAlteracao() {
-
+  salvarAlteracao(template: any) {
+    if (this.registerForm.valid) {
+      if (this.modoSalvar === 'post'){
+        this.evento = Object.assign({}, this.registerForm.value);
+        this.eventoService.postEvento(this.evento).subscribe(
+          (novoEvento: Evento) =>{
+            console.log(novoEvento);
+            template.hide();
+            this.getEventos();
+          }, error => {
+            console.log(error);
+          }
+        );
+      } else if (this.modoSalvar === 'put') {
+        this.evento = Object.assign({id: this.evento.id}, this.registerForm.value);
+        this.eventoService.putEvento(this.evento).subscribe(
+          (novoEvento: Evento) => {
+            console.log(novoEvento);
+            template.hide();
+            this.getEventos();
+          }, error => {
+            console.log(error);
+          }
+        );
+      }
+    }
   }
 
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
+  novoEvento(template: any) {
+    this.modoSalvar = 'post';
+    this.openModal(template);
+  }
+
+  editarEvento(evento: Evento, template: any) {
+    this.modoSalvar = 'put';
+    this.openModal(template);
+    this.evento = evento;
+    this.registerForm.patchValue(evento);
+  }
+
+  excluirEvento(evento: Evento) {
+    this.eventoService.deleteEvento(evento.id).subscribe(
+      (novoEvento: Evento) => {
+        console.log(novoEvento);
+        this.getEventos();
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
+
+  openModal(template: any) {
+    this.registerForm.reset();
+    template.show();
   }
 
   filtrarEventos(filtrarPor: string): Evento[] {
@@ -74,7 +126,7 @@ export class EventosComponent implements OnInit {
       (_eventos: Evento[]) => {
         this.eventos = _eventos;
         this.eventosFiltrados = this.eventos;
-        console.log(_eventos);
+        // console.log(_eventos);
       }, error => {
         console.log(error);
       });
