@@ -1,3 +1,4 @@
+<app-titulo [titulo]='titulo'></app-titulo>
 <div class="d-flex">
   <div class="form-inline mr-auto">
     <div class="form-group mb-2">
@@ -36,7 +37,7 @@
     <th>Opções</th>
   </tr>
 </thead>
-<tbody *ngIf="eventosFiltrados && eventosFiltrados.length">
+<tbody *ngIf="eventosFiltrados">
   <tr *ngFor="let evento of eventosFiltrados" >
     <td>
       <img *ngIf="mostrarImagem" src="http://localhost:5000/img/{{evento.imageUrl}}" 
@@ -70,7 +71,7 @@
   </td>
 </tr>
 </tbody>
-<tfoot *ngIf="!eventosFiltrados.length">
+<tfoot *ngIf="!eventosFiltrados">
   <tr>
     <td colspan="7">
       Nenhum evento encontrado

@@ -12,7 +12,7 @@ import { templateJitUrl } from '@angular/compiler';
   styleUrls: ['./eventos.component.css']
 })
 export class EventosComponent implements OnInit {
-
+  titulo = 'Eventos';
   eventos: Evento[];
 
   evento: Evento;

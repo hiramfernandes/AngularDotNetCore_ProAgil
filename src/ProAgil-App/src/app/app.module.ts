@@ -16,6 +16,10 @@ import { NavComponent } from './nav/nav.component';
 import { DateTimeFormatPipePipe } from './_helpers/DateTimeFormatPipe.pipe';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PalestrantesComponent } from './palestrantes/palestrantes.component';
+import { ContatosComponent } from './contatos/contatos.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { TituloComponent} from './_shared/titulo/titulo.component';
 
 
 @NgModule({
@@ -23,7 +27,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       AppComponent,
       EventosComponent,
       NavComponent,
-      DateTimeFormatPipePipe
+      DateTimeFormatPipePipe,
+      PalestrantesComponent,
+      ContatosComponent,
+      DashboardComponent,
+      TituloComponent
    ],
    imports: [
       BrowserModule,
