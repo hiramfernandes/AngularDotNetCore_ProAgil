@@ -41,7 +41,7 @@ namespace ProAgil.WebAPI.Controllers
         [HttpGet("GetUser")]
         public async Task< IActionResult > GetUser()
         {
-            return Ok(new User());
+            return Ok(new UserDto());
         }
 
         [HttpPost("Register")]
@@ -67,6 +67,7 @@ namespace ProAgil.WebAPI.Controllers
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginDto userLoginDto)
         {
             try
@@ -84,7 +85,7 @@ namespace ProAgil.WebAPI.Controllers
                     {
                         token = GeneratedJwtToken(appUser).Result,
                         user = userToReturn
-                    })
+                    });
                 }
 
                 return Unauthorized();

@@ -14,6 +14,7 @@ using ProAgil.Domain.Identity;
 using ProAgil.Repository;
 using ProAgil.Repository.Data;
 using System.Text;
+using AutoMapper;
 
 namespace ProAgil.WebAPI
 {
@@ -42,18 +43,9 @@ namespace ProAgil.WebAPI
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);
             builder.AddEntityFrameworkStores<ProAgilContext>();
-            builder.AddRoleValidator<Role>();
-            builder.AddRoleManager<Role>();
+            builder.AddRoleValidator<RoleValidator<Role>>();
+            builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<User>>();
-
-            services.AddMvc(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-
-                options.Filters.Add(new AuthorizeFilter(policy));
-            });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -67,9 +59,20 @@ namespace ProAgil.WebAPI
                     };
                 });
 
-            services.AddScoped<IProAgilRepository, ProAgilRepository>();
+            services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
             services.AddControllers();
             services.AddCors();
+
+            services.AddScoped<IProAgilRepository, ProAgilRepository>();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0)
@@ -91,6 +94,8 @@ namespace ProAgil.WebAPI
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 );
+
+            app.UseAuthentication();
 
             app.UseRouting();
             app.UseAuthorization();
