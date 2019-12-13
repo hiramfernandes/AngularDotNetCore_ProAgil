@@ -20,7 +20,9 @@ import { PalestrantesComponent } from './palestrantes/palestrantes.component';
 import { ContatosComponent } from './contatos/contatos.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { TituloComponent} from './_shared/titulo/titulo.component';
-
+import { UserComponent } from './user/user.component';
+import { LoginComponent } from './user/login/login.component';
+import { RegistrationComponent } from './user/registration/registration.component';
 
 @NgModule({
    declarations: [
@@ -31,7 +33,10 @@ import { TituloComponent} from './_shared/titulo/titulo.component';
       PalestrantesComponent,
       ContatosComponent,
       DashboardComponent,
-      TituloComponent
+      TituloComponent,
+      UserComponent,
+      LoginComponent,
+      RegistrationComponent
    ],
    imports: [
       BrowserModule,
