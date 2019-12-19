@@ -3,8 +3,6 @@ import { EventoService } from '../_services/evento.service';
 import { Evento } from '../_models/Evento';
 import { BsModalService } from 'ngx-bootstrap/modal/';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { templateJitUrl } from '@angular/compiler';
-
 
 @Component({
   selector: 'app-eventos',
@@ -60,7 +58,7 @@ export class EventosComponent implements OnInit {
 
   salvarAlteracao(template: any) {
     if (this.registerForm.valid) {
-      if (this.modoSalvar === 'post'){
+      if (this.modoSalvar === 'post') {
         this.evento = Object.assign({}, this.registerForm.value);
         this.eventoService.postEvento(this.evento).subscribe(
           (novoEvento: Evento) =>{
